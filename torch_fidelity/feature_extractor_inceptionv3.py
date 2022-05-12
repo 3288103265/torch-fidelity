@@ -89,12 +89,11 @@ class FeatureExtractorInceptionV3(FeatureExtractorBase):
             p.requires_grad_(False)
 
     def forward(self, x):
-        vassert(torch.is_tensor(x) and x.dtype == torch.uint8, 'Expecting image as torch.Tensor with dtype=torch.uint8')
+        # [-1, 1]
+        vassert(torch.is_tensor(x))
         features = {}
         remaining_features = self.features_list.copy()
 
-        x = x.float()
-        # N x 3 x ? x ?
 
         x = interpolate_bilinear_2d_like_tensorflow1x(
             x,
@@ -103,9 +102,6 @@ class FeatureExtractorInceptionV3(FeatureExtractorBase):
         )
         # N x 3 x 299 x 299
 
-        # x = (x - 128) * torch.tensor(0.0078125, dtype=torch.float32, device=x.device)  # really happening in graph
-        x = (x - 128) / 128  # but this gives bit-exact output _of this step_ too
-        # N x 3 x 299 x 299
 
         x = self.Conv2d_1a_3x3(x)
         # N x 32 x 149 x 149
