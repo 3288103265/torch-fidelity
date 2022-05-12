@@ -90,7 +90,7 @@ class FeatureExtractorInceptionV3(FeatureExtractorBase):
 
     def forward(self, x):
         # [-1, 1]
-        vassert(torch.is_tensor(x))
+        vassert(torch.is_tensor(x),"x must be tensor")
         features = {}
         remaining_features = self.features_list.copy()
 
